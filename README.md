@@ -1,4 +1,4 @@
-# RealEstate  - Mobile Application
+# EeState-Networks  - Mobile Application
 
 A feature-rich real estate mobile app built with React Native and Expo, featuring property listings, advanced search, and user authentication.
 

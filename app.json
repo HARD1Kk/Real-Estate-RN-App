@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "native_restate",
-    "slug": "native_restate",
+    "name": "restate-networks",
+    "slug": "restate-networks",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "nativerestate",
+    "scheme": "restate-networks",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
