@@ -1,50 +1,85 @@
-# Welcome to your Expo app 👋
+# RealEstate  - Mobile Application
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A feature-rich real estate mobile app built with React Native and Expo, featuring property listings, advanced search, and user authentication.
 
-## Get started
+![App Preview](./assets/images/splash.png)
 
-1. Install dependencies
+## Features
+- Property listing with rich details (price, location, amenities)
+- Advanced search filters (price range, property type, amenities)
+- User authentication system (Google sign-in)
+- Favorite properties tracking
+- Interactive map integration
+- Profile management
+- Responsive UI with NativeWind (Tailwind CSS for React Native)
 
-   ```bash
-   npm install
-   ```
+## Technology Stack
+- ⚛️ React Native 0.73
+- 🚀 Expo SDK 49
+- 🎨 NativeWind (Tailwind CSS)
+- 📱 TypeScript
+- 🗺️ React Navigation 6.x
+- 📊 Reanimated (for animations)
 
-2. Start the app
+## Project Structure
+```
+native_restate/
+├── app/                 # Main application code
+│   ├── (root)/          # Root navigation stack
+│   ├── sign-in.tsx      # Authentication screen
+│   └── global.css       # Global styles
+├── assets/              # Media assets
+│   ├── fonts/           # Custom font files
+│   ├── icons/           # App icons
+│   └── images/          # App images
+├── constants/           # Reusable constants
+│   ├── data.ts          # Sample property data
+│   └── icons.ts         # Icon mappings
+└── components/          # Shared UI components
 
-   ```bash
-   npx expo start
-   ```
+## Getting Started
 
-In the output, you'll find options to open the app in a
+### Prerequisites
+- Node.js 18+
+- npm 9+
+- Expo CLI (install globally via `npm install -g expo-cli`)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+### Installation
+1. Clone the repository
+2. Install dependencies:
 ```bash
-npm run reset-project
+npm install
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+3. Start the development server:
+```bash
+npx expo start
+```
 
-## Learn more
+Scan the QR code with:
+- **Expo Go** (iOS/Android)
+- **Physical device** (via Expo Dev Client)
+- **Simulator** (Android Studio/Xcode)
 
-To learn more about developing your project with Expo, look at the following resources:
+## Configuration
+Create `.env` file with your API keys:
+```env
+GOOGLE_WEB_CLIENT_ID=your_client_id
+MAPS_API_KEY=your_maps_key
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Scripts
+- `npm start`: Start development server
+- `npm run android`: Run on Android emulator
+- `npm run ios`: Run on iOS simulator
+- `npm run web`: Run web version
 
-## Join the community
+## Contributing
+1. Fork the repository
+2. Create feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit changes (`git commit -m 'Add amazing feature'`)
+4. Push to branch (`git push origin feature/amazing-feature`)
+5. Open Pull Request
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## License
+MIT License - see [LICENSE](LICENSE) for details
