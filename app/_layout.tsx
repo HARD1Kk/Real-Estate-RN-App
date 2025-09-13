@@ -1,24 +1,27 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { SplashScreen, Stack } from "expo-router";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import "./global.css";
+import { useFonts } from "expo-font";
+import { useEffect } from "react";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
-  );
+
+const [fontsLoaded] = useFonts({ // without map
+  "Rubik-Bold": require('../assets/fonts/Rubik-Bold.ttf'),
+  "Rubik-Regular": require('../assets/fonts/Rubik-Regular.ttf'),
+  "Rubik-Medium": require('../assets/fonts/Rubik-Medium.ttf'),
+  "Rubik-Light": require('../assets/fonts/Rubik-Light.ttf'),
+  "Rubik-ExtraBold": require('../assets/fonts/Rubik-ExtraBold.ttf'),
+});
+
+useEffect(() => {
+  if (fontsLoaded) {
+    SplashScreen.hideAsync();
+  }
+}, [fontsLoaded]); // without deps
+
+if(!fontsLoaded)return null;
+
+  return <Stack screenOptions={{ headerShown: false }} />;
 }
