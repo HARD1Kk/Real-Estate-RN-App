@@ -1,6 +1,5 @@
-import { Client ,Account, Avatars, OAuthProvider } from "react-native-appwrite";
-import * as Linking from 'expo-linking';
-
+import { Client, Account, Avatars, OAuthProvider } from "react-native-appwrite";
+import * as Linking from "expo-linking";
 
 export const config = {
   Platform: "com.ReStateNet.com",
@@ -18,31 +17,61 @@ appwriteClient
 export const avatar = new Avatars(appwriteClient);
 export const account = new Account(appwriteClient);
 
+export async function login() {
+  try {
+    const redirectUri = Linking.createURL("/");
+    const response = await account.createOAuth2Token(
+      OAuthProvider.Google,
+      redirectUri
+    );
 
-export async function login(){
+    if (!response) throw new Error("Failed to login");
 
-    try {
+    const browserResult = await openAuthSessionAsync(
+      response.toString(),
+      redirectUri
+    );
+    if (browserResult != "success") throw new Error("Failed to login");
+    const url = new URL(browserResult.url);
 
-      const redirectUri = Linking.createURL('/');
-      const response = await account.createOAuth2Token(
-        OAuthProvider.Google,redirectUri);
-     
-        if(!response) throw new Error('Failed to login');
-        
-        const browserResult = await openAuthSessionAysync(
-          response.toString(),
-          redirectUri
-        )
+    const secret = url.searchParams.get("secret")?.toString();
+    const userId = url.searchParams.get("userId")?.toString();
 
+    if (!secret || !userId) throw new Error("Failed to login");
 
+    const session = await account.createSession(userId, secret);
+    if (!session) throw new Error("Failed to create session");
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+export async function logout() {
+  try {
+    await account.deleteSessions();
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+export async function getUser(){
+  try{
+    const response = await account.get();
+    return response;
+  if(!response.$id){
+    const userAvatar = avatar.getInitials(response.name);
+    return {
+      ...response ,
+      avatar : userAvatar.toString(), 
     }
-     catch(error) {
-      console.log(error);
-      
-     }
-    catch(error){
-        console.log(error);
-        return false;
-        
-    }
+  }
+  }
+  catch(error){
+    console.log(error);
+    return null
+    
+  }
+  }
 }
