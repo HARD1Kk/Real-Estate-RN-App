@@ -1,8 +1,11 @@
-import { Client, Account, Avatars, OAuthProvider } from "react-native-appwrite";
 import * as Linking from "expo-linking";
+import * as WebBrowser from 'expo-web-browser';
+import { Account, Avatars, Client, OAuthProvider } from "react-native-appwrite";
+
+console.log(process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID);
 
 export const config = {
-  Platform: "com.ReStateNet.com",
+  Platform:"com.ReStateNet.com",
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
   project: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
 };
@@ -27,11 +30,11 @@ export async function login() {
 
     if (!response) throw new Error("Failed to login");
 
-    const browserResult = await openAuthSessionAsync(
+    const browserResult = await WebBrowser.openAuthSessionAsync(
       response.toString(),
       redirectUri
     );
-    if (browserResult != "success") throw new Error("Failed to login");
+    if (typeof browserResult !== 'object' || browserResult.type !== 'success') throw new Error("Failed to login");
     const url = new URL(browserResult.url);
 
     const secret = url.searchParams.get("secret")?.toString();
@@ -56,17 +59,17 @@ export async function logout() {
     return false;
   }
 }
-export async function getUser(){
-  try{
+export async function getCurrentUser() {
+  try {
     const response = await account.get();
-    return response;
-  if(!response.$id){
-    const userAvatar = avatar.getInitials(response.name);
-    return {
-      ...response ,
-      avatar : userAvatar.toString(), 
+    if (response?.$id) {
+      const userAvatar = avatar.getInitials(response.name || '');
+      return {
+        ...response,
+        avatar: userAvatar.toString()
+      };
     }
-  }
+    return null;
   }
   catch(error){
     console.log(error);

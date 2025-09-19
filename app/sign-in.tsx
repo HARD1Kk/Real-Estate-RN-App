@@ -1,23 +1,26 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  Alert,
-} from "react-native";
-import React from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import images from "@/constants/images";
 import icons from "@/constants/icons";
+import images from "@/constants/images";
 import { login } from "@/lib/appwrite";
+import { useGlobalContext } from "@/lib/global-provider";
+import React from "react";
+import {
+  Alert,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
+  const {refetch , loading , isLoggedIn} = useGlobalContext();
+
   const handleLogin = async () => {
     const result = await login();
 
     if (result) {
-      console.log("login succesful");
+      refetch();
     } else {
       Alert.alert("Error", "Login failed");
     }
@@ -44,7 +47,7 @@ const SignIn = () => {
           <Text className="text-lg font-rubik text-center mt-12 text-black-200">
             Login to ReState Networks with Google
           </Text>
-          <TouchableOpacity className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5 ">
+          <TouchableOpacity onPress={handleLogin} className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5 ">
             <View className="flex flex-row items-center justify-center ">
               <Image
                 source={icons.google}
