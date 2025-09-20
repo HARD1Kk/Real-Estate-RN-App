@@ -2,6 +2,7 @@ import icons from "@/constants/icons";
 import images from "@/constants/images";
 import { login } from "@/lib/appwrite";
 import { useGlobalContext } from "@/lib/global-provider";
+import { router } from "expo-router";
 import React from "react";
 import {
   Alert,
@@ -14,14 +15,22 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignIn = () => {
-  const {refetch , loading , isLoggedIn} = useGlobalContext();
+  const { refetch, loading, isLoggedIn } = useGlobalContext();
+
+ 
 
   const handleLogin = async () => {
-    const result = await login();
+    try {
+      const result = await login();
 
-    if (result) {
-      refetch();
-    } else {
+      if (result && result.success) {
+        refetch();
+        router.replace("/");
+      } else {
+        Alert.alert("Error", "Login failed");
+      }
+    } catch (error) {
+      console.error("Login failed:", error);
       Alert.alert("Error", "Login failed");
     }
   };
@@ -47,7 +56,10 @@ const SignIn = () => {
           <Text className="text-lg font-rubik text-center mt-12 text-black-200">
             Login to ReState Networks with Google
           </Text>
-          <TouchableOpacity onPress={handleLogin} className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5 ">
+          <TouchableOpacity
+            onPress={handleLogin}
+            className="bg-white shadow-md shadow-zinc-300 rounded-full w-full py-4 mt-5 "
+          >
             <View className="flex flex-row items-center justify-center ">
               <Image
                 source={icons.google}
