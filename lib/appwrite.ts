@@ -44,7 +44,9 @@ export async function login() {
 
     const session = await account.createSession(userId, secret);
     if (!session) throw new Error("Failed to create session");
-    return true;
+    
+    console.log("Login successful!");
+    return { success: true, message: "Login successful" };
   } catch (error) {
     console.log(error);
     return false;
