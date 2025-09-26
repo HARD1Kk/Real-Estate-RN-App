@@ -1,24 +1,46 @@
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
-import { Account, Avatars, Client, OAuthProvider } from "react-native-appwrite";
-
-console.log(process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID);
+import {
+    Account,
+    Avatars,
+    Client,
+    Databases,
+    OAuthProvider,
+    Query,
+} from "react-native-appwrite";
 
 export const config = {
   Platform: "com.ReStateNet.com",
   endpoint: process.env.EXPO_PUBLIC_APPWRITE_ENDPOINT,
   project: process.env.EXPO_PUBLIC_APPWRITE_PROJECT_ID,
+  database_Id: process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID,
+  galleriesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_GALLERIES_TABLE_ID,
+  reviewsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_REVIEWS_TABLE_ID,
+  propertiesCollectionId: process.env.EXPO_PUBLIC_APPWRITE_PROPERTIES_TABLE_ID,
+  agentsCollectionId: process.env.EXPO_PUBLIC_APPWRITE_AGENTS_TABLE_ID,
 };
 
 export const appwriteClient = new Client();
 
-appwriteClient
-  .setEndpoint(config.endpoint!)
-  .setProject(config.project!)
-  .setPlatform(config.Platform!);
+if (!config.endpoint || !config.project) {
+  throw new Error(
+    "Appwrite endpoint or project ID is missing. Please check your environment variables."
+  );
+}
+
+try {
+  appwriteClient
+    .setEndpoint(config.endpoint as string)
+    .setProject(config.project as string)
+    .setPlatform(config.Platform);
+} catch (error) {
+  console.error("Appwrite client initialization failed:", error);
+  throw new Error("Failed to initialize Appwrite client");
+}
 
 export const avatar = new Avatars(appwriteClient);
 export const account = new Account(appwriteClient);
+export const databases = new Databases(appwriteClient);
 
 export async function login() {
   try {
@@ -115,5 +137,57 @@ export async function getCurrentUser() {
   } catch (error) {
     console.log(error);
     return null;
+  }
+}
+
+export async function getLatestProperties() {
+  try {
+    const result = await databases.listDocuments(
+      config.database_Id!,
+      config.propertiesCollectionId!,
+      [Query.orderAsc("$createdAt"), Query.limit(5)]
+    );
+    return result.documents;
+  } catch (error) {
+    return [];
+  }
+}
+
+export async function getProperties(params?: {
+  filter?: string;
+  query?: string;
+  limit?: number;
+}) {
+  try {
+    const filter = params?.filter ?? "";
+    const query = params?.query ?? "";
+    const limit = params?.limit;
+    const buildQuery = [Query.orderDesc("$createdAt")];
+
+    if (filter && filter !== "All")
+      buildQuery.push(Query.equal("type", filter));
+    if (query) {
+      buildQuery.push(
+        Query.or([
+          Query.search("name", query),
+          Query.search("address", query),
+          Query.search("type", query),
+        ])
+      );
+    }
+
+    if (limit) {
+      buildQuery.push(Query.limit(limit));
+    }
+
+    const result = await databases.listDocuments(
+      config.database_Id!,
+      config.propertiesCollectionId!,
+      buildQuery
+    );
+    return result.documents;
+  } catch (error) {
+    console.log(error);
+    return [];
   }
 }
